@@ -2,11 +2,12 @@
 
 model.Matrix <- function(object, data = environment(object),
 			 contrasts.arg = NULL, xlev = NULL,
-			 sparse = FALSE, ...)
+			 sparse = FALSE, drop.unused.levels = FALSE, ...)
 {
     if(sparse) {
 	m <- sparse.model.matrix(object, data=data, contrasts.arg=contrasts.arg,
-			    xlev=xlev, ...)
+				 drop.unused.levels=drop.unused.levels, xlev=xlev,
+				 ...)
 	new("dsparseModelMatrix",  m, ## droping attributes ?
 	    assign = attr(m, "assign"),
 	    contrasts = if(is.null(ctr <- attr(m,"contrasts")))list() else ctr)
@@ -169,10 +170,8 @@ setAs("dsparseModelMatrix", "predModule",
           X = from, fac = Cholesky(crossprod(from), LDL = FALSE))
   })
 
-##' <description>
 ##' Create an respModule, which could be from a derived class such as
 ##' glmRespMod or nlsRespMod.
-##' <details>
 ##' @title Create a respModule object
 ##' @param a model frame
 ##' @param family the optional glm family (glmRespMod only)
@@ -253,7 +252,8 @@ mkRespMod <- function(fr, family = NULL, nlenv = NULL, nlmod = NULL)
 
 glm4 <- function(formula, family, data, weights, subset,
                  na.action, start = NULL, etastart, mustart, offset,
-                 sparse = FALSE, doFit = TRUE, control = list(...),
+		 sparse = FALSE, drop.unused.levels = FALSE, doFit = TRUE,
+		 control = list(...),
                  ## all the following are currently ignored:
                  model = TRUE, x = FALSE, y = TRUE, contrasts = NULL, ...) {
     call <- match.call()
@@ -280,7 +280,8 @@ glm4 <- function(formula, family, data, weights, subset,
 
     ans <- new("glpModel", call = call,
 	       resp = mkRespMod(mf, family),
-	       pred = as(model.Matrix(formula, mf, sparse = sparse),
+	       pred = as(model.Matrix(formula, mf, sparse = sparse,
+				      drop.unused.levels=drop.unused.levels),
 			 "predModule"))
     if (doFit)
 	## TODO ? - make 'doFP' a function argument / control component:
@@ -296,9 +297,8 @@ fitGlm4 <- function(lp, doFP = TRUE, control = list()) {
     IRLS(lp, control)
 }
 
-##' <description>
 ##' A single step in the fixed-point algorithm for GLMs.
-##' <details>
+##'
 ##' In general we use an algorithm similar to the Gauss-Newton
 ##' algorithm for nonlinear least squares (except, of course, that it
 ##' allows for reweighting).  For some models, such as those using the
@@ -326,9 +326,7 @@ glm.fp <- function(lp) {
     as.vector(solve(crossprod(wM), crossprod(wM, z[good] * w)))
 }
 
-##' <description>
 ##'
-##' <details>
 ##' @title
 ##' @param control  a (named) list {or vector; as.list(.)  must work}.
 ##' @param defaults a (named) list {or vector; as.list(.)  must work}.
@@ -395,7 +393,7 @@ IRLS <- function(mod, control) {
         cbase <- cc
         respMod <- updateWts(respMod)
         wrss0 <- sum(respMod@wtres^2)
-        predMod <- reweight(predMod, respMod@sqrtXwt, respMod@wtres)
+        predMod <- reweightPred(predMod, respMod@sqrtXwt, respMod@wtres)
         incr <- solveCoef(predMod)
         convcrit <- sqrt(attr(incr, "sqrLen")/wrss0)
 	if(verbose)
@@ -436,7 +434,7 @@ IRLS <- function(mod, control) {
     predMod@coef <- cc
     if(finalUpdate) {
 	respMod <- updateWts(respMod)
-	predMod <- reweight(predMod, respMod@sqrtXwt, respMod@wtres)
+	predMod <- reweightPred(predMod, respMod@sqrtXwt, respMod@wtres)
     }
 
     mod@ fitProps <- list(convcrit=convcrit, iter=iter, nHalvings=nHalvings)
@@ -452,17 +450,17 @@ IRLS <- function(mod, control) {
 
 ### FIXME(2): lme4a can get rid of its  updateMer(), as soon as it uses this:
 
-##' @title update( <S4 model> ) -- using  getCall(obj)
-##'
-##' <description> This is almost identical to stats::update(), with the only
+##' This is almost identical to stats::update(), with the only
 ##' difference that we use  getCall(object) instead of  object$call.  This
 ##' makes it much more generally useful, notably for S4 model classes.
+##'
+##' @title update( <S4 model> ) -- using  getCall(obj)
 ##'
 ##' @param object
 ##' @param formula.
 ##' @param ...
 ##' @param evaluate
-##' @return
+##' @return a 'Model', very similar to 'object'
 updateModel <- function(object, formula., ..., evaluate = TRUE)
 {
     if (is.null(call <- getCall(object)))
@@ -491,26 +489,44 @@ setMethod("coef", "glpModel", function(object, ...)
 	  structure(prd@coef,
 		    names = colnames(prd@X))
       })
-setMethod("fitted", "glpModel", function(object, ...) object@resp@mu)
-setMethod("residuals", "glpModel",
+setMethod("fitted", "respModule", function(object, ...) object@mu)
+setMethod("fitted", "glpModel", function(object, ...) {object <- object@resp; callGeneric(...)})
+
+setMethod("residuals", "respModule",
           function(object, type = c("deviance", "pearson",
                            "working", "response", "partial"), ...)
       {
 	  type <- match.arg(type)
+          if (type %in% c("pearson", "deviance")) return(object@wtres)
+          if (type %in% c("working", "response")) return(object@y - object@mu)
+          stop(paste("residuals of type", sQuote(type), "not yet available"))
+      })
+setMethod("residuals", "glmRespMod",
+          function(object, type = c("deviance", "pearson",
+                           "working", "response", "partial"), ...)
+      {
+	  type <- match.arg(type)
+          if (type == "pearson") return(object@wtres)
 
-	  ## glm.fit: residuals <- (y - mu)/mu.eta(eta)
-	  rsp <- object@resp
-	  mu <- rsp@mu
-	  y <- rsp@y
-	  residuals <- y - mu
-	  if(rsp@family)
-	      ## working residuals:
-	      residuals <- residuals/rsp@family@mu.eta(rsp@eta)
-
-	  if(type != "working")
-	      warning("returning 'working' residuals only at the moment")
-
-	  residuals
+          fam <- object@family
+	  mu <- object@mu
+	  y <- object@y
+          wts <- object@weights
+          residuals <- y - mu
+	  if (type == "response") return(residuals)
+          if (type == "working") return(residuals/fam$mu.eta(object@eta))
+          if (type == "deviance") {
+              d.res <- sqrt(pmax(fam$dev.resids(y, mu, wts), 0))
+              return(ifelse(y > mu, d.res, -d.res))
+          }
+          stop(paste("residuals of type", sQuote(type), "not yet available"))
+      })
+setMethod("residuals", "glpModel",
+          function(object, type = c("deviance", "pearson",
+                           "working", "response", "partial"), ...)
+      {
+          object <- object@resp
+          callGeneric(...)
       })
 
 setMethod("updateMu", signature(respM = "respModule", gamma = "numeric"),
@@ -563,23 +579,29 @@ setMethod("updateWts", signature(respM = "glmRespMod"),
 	  respM
       })
 
-
-setMethod("reweight",
+setMethod("reweightPred",
           signature(predM = "dPredModule", sqrtXwt = "matrix", wtres = "numeric"),
           function(predM, sqrtXwt, wtres, ...)
       {
-          stopifnot(ncol(sqrtXwt) == 1L) # FIXME: add nls version
           V <- as.vector(sqrtXwt) * predM@X
+          s <- ncol(sqrtXwt)
+          if (s > 1L)
+              V <- Reduce("+", lapply(split(seq_len(nrow(V)), gl(s, nrow(sqrtXwt))),
+                                      function(ind) V[ind,]))
           predM@Vtr <- as.vector(crossprod(V, wtres))
           predM@fac <- chol(crossprod(V))
           predM
       })
-setMethod("reweight",
+
+setMethod("reweightPred",
           signature(predM = "sPredModule", sqrtXwt = "matrix", wtres = "numeric"),
           function(predM, sqrtXwt, wtres, ...)
       {
-          stopifnot(ncol(sqrtXwt) == 1L) # FIXME: add nls version
           Vt <- crossprod(predM@X, Diagonal(x = as.vector(sqrtXwt)))
+          s <- ncol(sqrtXwt)
+          if (s > 1L)
+              Vt <- Reduce("+", lapply(split(seq_len(ncol(Vt)), gl(s, nrow(sqrtXwt))),
+                                      function(ind) Vt[, ind]))
           predM@Vtr <- as.vector(Vt %*% wtres)
           predM@fac <- update(predM@fac, Vt)
           predM

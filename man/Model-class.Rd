@@ -38,7 +38,7 @@
       \code{\link[stats]{update}} (package \pkg{stats}).}
   }
 }
-\seealso{
+\seealso{% as this will move to  'stats4':
   the \code{\link[MatrixModels:glpModel-class]{glpModel}} class in package
   \pkg{MatrixModels} which extends this class.
 }

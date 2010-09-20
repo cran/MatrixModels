@@ -5,6 +5,9 @@
 \alias{glmRespMod-class}
 \alias{nlsRespMod-class}
 \alias{nglmRespMod-class}
+\alias{fitted,respModule-method}
+\alias{residuals,respModule-method}
+\alias{residuals,glmRespMod-method}
 \title{"respModule" and derived classes}
 \description{
   The \code{"respModule"} class is the virtual base class of
@@ -57,7 +60,18 @@
   }
 }
 \section{Methods}{
-No methods defined with class "respModule" in the signature.
+    \describe{
+    \item{fitted}{\code{signature(object = "respModule")}: fitted values;
+      there may be several types, corresponding to the residuals, see there
+      (below).}
+    \item{residuals}{\code{signature(object = "respModule")}: residuals,
+      depending on the type of the model, there are several types of
+      residuals and correspondingly residuals,
+      see \code{\link[stats:glm.summaries]{residuals.glm}} from the
+      \pkg{stats} package.  Because many of these types of residuals are
+      identical except for objects that inherit from "glmRespMod", a
+      separate method is defined for this subclass.}
+  }
 }
 \seealso{\code{\link{mkRespMod}}}
 \examples{

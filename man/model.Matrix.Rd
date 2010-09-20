@@ -10,7 +10,8 @@
 }
 \usage{
 model.Matrix(object, data = environment(object),
-             contrasts.arg = NULL, xlev = NULL, sparse = FALSE, \dots)
+             contrasts.arg = NULL, xlev = NULL,
+             sparse = FALSE, drop.unused.levels = FALSE, \dots)
 }
 \arguments{
   \item{object}{an object of an appropriate class.  For the default
@@ -27,6 +28,12 @@ model.Matrix(object, data = environment(object),
   \item{sparse}{logical indicating if the result should be sparse
     (of class \code{\linkS4class{sparseModelMatrix}}), using
     \code{\link{sparse.model.matrix}()}.}
+  \item{drop.unused.levels}{used only when \code{sparse} is TRUE: Should
+    factors have unused levels dropped?
+    (This used to be true, \emph{implicitly} in the first versions up to
+    July 2010; the default has been changed for compatibility with
+    \R's standard (dense) \code{\link{model.matrix}()}.
+  }
   \item{\dots}{further arguments passed to or from other methods.}
 }
 \details{

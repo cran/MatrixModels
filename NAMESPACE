@@ -7,12 +7,13 @@
 ## importFrom("graphics", image)
 ## importFrom("utils", head, tail)
 ##
-importFrom("stats", ## potentially all these (we import into 'lme4a'):
-           # anova,
-           coef,# confint, cov2cor, deviance,
-           fitted,
-           formula,# predict, profile,
-           residuals# simulate, terms,
+importFrom("stats" ## potentially all these (we import into 'lme4a'):
+           # , anova
+           , coef, coefficients # confint, cov2cor, deviance,
+           , fitted, fitted.values
+           , formula # predict, profile
+           , residuals, resid # 'resid' needed too, unfortunately..
+           # , simulate, terms
            , update
            )
 
@@ -55,12 +56,10 @@ export(
 #TODO       "lm.fit.sparse",# <- "somewhat experimental"
        "mkRespMod",
        "model.Matrix"
-
-## not-yet-exported:
-## , "solveCoef"
-## , "reweight"
-## , "updateMu"
-## , "updateWts"
+       , "solveCoef"
+       , "reweightPred"
+       , "updateMu"
+       , "updateWts"
        )
 
 exportClasses(
@@ -89,8 +88,9 @@ exportClasses(
 exportMethods(## for both own and "other" generics:
               "getCall"
               ## re-export S4 methods, for "stats"-S3-generics:
-              ,"coef" ## "cov2cor",
-              ,"fitted", "formula", "residuals"
+              ,"coef", "coefficients" ## , "cov2cor"
+              ,"fitted", "fitted.values", "formula"
+              ,"residuals", "resid"
               ,"update"
 	      ,"print"# print(x, ...) when show(x) is not sufficient
 	      ,"show"

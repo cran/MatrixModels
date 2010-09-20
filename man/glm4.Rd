@@ -13,7 +13,8 @@
 \usage{
 glm4(formula, family, data, weights, subset, na.action,
      start = NULL, etastart, mustart, offset,
-     sparse = FALSE, doFit = TRUE, control = list(\dots),
+     sparse = FALSE, drop.unused.levels = FALSE, doFit = TRUE,
+     control = list(\dots),
      model = TRUE, x = FALSE, y = TRUE, contrasts = NULL, \dots)
 }
 \arguments{%% much cut & pasted from  glm.Rd :
@@ -58,6 +59,12 @@ glm4(formula, family, data, weights, subset, na.action,
     specified their sum is used.  See \code{\link{model.offset}}.}
   \item{sparse}{logical indicating if the model matrix should be sparse
     or not.}
+  \item{drop.unused.levels}{used only when \code{sparse} is TRUE: Should
+    factors have unused levels dropped?
+    (This used to be true, \emph{implicitly} in the first versions up to
+    July 2010; the default has been changed for compatibility with
+    \R's standard (dense) \code{\link{model.matrix}()}.
+  }
   \item{doFit}{logical indicating if the model should be fitted (or just
     returned unfitted).}
   \item{control}{
@@ -110,11 +117,18 @@ stopifnot( identical(glmM2@pred@coef, glmM3@pred@coef),
            all.equal(glmM @pred@coef, c.glm, tol=1e-7),
            all.equal(glmM2@pred@coef, c.glm, tol=1e-12))
 \dontshow{
+All.eq <- function(x,y, ...) all.equal(x,y, tol= 1e-12, ...)
 stopifnot( ## ensure typos are *caught* :
   inherits(try(glm4(counts ~ outcome + treatment, family=poisson, data=trial,
                        fooBar = FALSE)), "try-error"),
   ## check formula(.): {environments differ - FIXME?}
-  formula(glmM) == formula(glm.D93))
+  formula(glmM) == formula(glm.D93),
+  identical(coef(glmM2), coefficients(glmM3)),
+  All.eq   (coef(glmM2), coefficients(glm.D93)),
+  identical(fitted.values(glmM2), fitted(glmM3)),
+  All.eq   (residuals(glmM2), resid(glm.D93), check.attr=FALSE),# names()% FIXME ??
+  identical(residuals(glmM2), resid(glmM3))
+)
 }
 
 ## Watch the iterations --- and use no intercept --> more sparse X

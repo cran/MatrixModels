@@ -1,0 +1,23 @@
+2010-08-23  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/modelMatrix.R (model.Matrix, glm4): use argument
+	'drop.unused.levels' (and depend on Matrix version *-44).
+
+2010-08-10  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* NAMESPACE:
+	* R/AllGeneric.R, man/resid-et-al.Rd: define "ANY"-method (and
+	hence generic) for the three standard aliases
+	resid(), fitted.values() and coefficients(), and
+	* man/glm4.Rd: check some of these
+
+2010-08-09  Douglas Bates  <bates@stat.wisc.edu>
+
+	* R/modelMatrix.R: added "fitted" and "residuals" methods for
+	"respModule" classes.  Modified corresponding methods for
+	"glpModel" to chain to these.  Modified the reweightPred methods
+	to allow for ncol(sqrtXwt) > 1.
+
+	* DESCRIPTION (Version): 0.2-0, CRAN-released: ...
+
+
