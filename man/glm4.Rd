@@ -126,7 +126,7 @@ stopifnot( ## ensure typos are *caught* :
   identical(coef(glmM2), coefficients(glmM3)),
   All.eq   (coef(glmM2), coefficients(glm.D93)),
   identical(fitted.values(glmM2), fitted(glmM3)),
-  All.eq   (residuals(glmM2), resid(glm.D93), check.attr=FALSE),# names()% FIXME ??
+  All.eq   (residuals(glmM2), resid(glm.D93), check.attributes=FALSE),# names()% FIXME ??
   identical(residuals(glmM2), resid(glmM3))
 )
 }
