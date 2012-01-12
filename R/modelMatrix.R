@@ -1,14 +1,14 @@
 ####---- This was part of ../../Matrix/R/spModels.R -- till 2010-07-25
 
 model.Matrix <- function(object, data = environment(object),
-			 contrasts.arg = NULL, xlev = NULL,
+		 contrasts.arg = NULL, xlev = NULL,
 			 sparse = FALSE, drop.unused.levels = FALSE, ...)
 {
     if(sparse) {
 	m <- sparse.model.matrix(object, data=data, contrasts.arg=contrasts.arg,
 				 drop.unused.levels=drop.unused.levels, xlev=xlev,
 				 ...)
-	new("dsparseModelMatrix",  m, ## droping attributes ?
+	new("dsparseModelMatrix",  m, ## dropping attributes ?
 	    assign = attr(m, "assign"),
 	    contrasts = if(is.null(ctr <- attr(m,"contrasts")))list() else ctr)
     } else {
@@ -445,43 +445,6 @@ IRLS <- function(mod, control) {
     mod
 }
 
-### FIXME: Think of replacing  stats::update() by this, and provide a
-### -----  stats::getCall() S3 generic (and S4 generic in methods).
-
-### FIXME(2): lme4a can get rid of its  updateMer(), as soon as it uses this:
-
-##' This is almost identical to stats::update(), with the only
-##' difference that we use  getCall(object) instead of  object$call.  This
-##' makes it much more generally useful, notably for S4 model classes.
-##'
-##' @title update( <S4 model> ) -- using  getCall(obj)
-##'
-##' @param object
-##' @param formula.
-##' @param ...
-##' @param evaluate
-##' @return a 'Model', very similar to 'object'
-updateModel <- function(object, formula., ..., evaluate = TRUE)
-{
-    if (is.null(call <- getCall(object)))
-	stop("object should contain a 'call' component")
-    extras <- match.call(expand.dots = FALSE)$...
-    if (!missing(formula.))
-	call$formula <- update.formula(formula(object), formula.)
-    if (length(extras)) {
-	existing <- !is.na(match(names(extras), names(call)))
-	for(a in names(extras)[existing])
-            call[[a]] <- extras[[a]]
-	if(any(!existing))
-	    call <- as.call(c(as.list(call), extras[!existing]))
-    }
-    if (evaluate)
-	eval(call, parent.frame())
-    else call
-}
-
-setMethod("update", "Model", updateModel)
-setMethod("getCall", "Model", function(x) x@call)
 setMethod("formula", "Model", function(x, ...) x@call$formula)
 setMethod("coef", "glpModel", function(object, ...)
       {

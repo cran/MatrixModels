@@ -1,3 +1,36 @@
+2012-01-12  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.3-1
+	(Depends): R >= 2.14.0, so we can
+	* man/getCall.Rd: remove entirely
+	* R/modelMatrix.R: ditto:
+	get rid of getCall (and all the new wrong R CMD check warnings).
+
+2011-08-19  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.3-0
+
+	* R/modelMatrix.R:
+	* NAMESPACE: only define & export getCall() if R < 2.14
+
+2011-02-17  Douglas Bates <bates@stat.wisc.edu>
+
+	* DESCRIPTION: Remove Encoding: directive.
+
+2011-01-17  Douglas Bates <bates@stat.wisc.edu>
+
+	* R/modelMatrix.R: Spelling correction.
+
+2010-11-27  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/AllClass.R: comment stopifnot() which prevents INSTALL
+
+2010-11-01  Douglas Bates  <bates@stat.wisc.edu>
+
+	* R/AllClass.R (rMod,glrMod): Initial attempt at using reference
+	classes for the response modules.  Still some problems with the
+	contains argument to setRefClass for GLMRespMod.
+
 2010-08-23  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* R/modelMatrix.R (model.Matrix, glm4): use argument

@@ -26,8 +26,8 @@ importMethodsFrom("Matrix", as.matrix, as.vector, coerce,
                   Cholesky, chol, chol2inv,
                   solve,
                   summary, print,
-                  update
-                  )
+		  update # notably the "CHMfactor" one
+		  )
 
 importClassesFrom("Matrix",
                   CHMfactor,
@@ -50,8 +50,9 @@ importClassesFrom("Matrix",
                   sparseMatrix)
 
 ## Generics and functions defined in this package
+
+
 export(
-       "getCall",
        "glm4",
 #TODO       "lm.fit.sparse",# <- "somewhat experimental"
        "mkRespMod",
@@ -86,12 +87,11 @@ exportClasses(
 
 
 exportMethods(## for both own and "other" generics:
-              "getCall"
+
               ## re-export S4 methods, for "stats"-S3-generics:
-              ,"coef", "coefficients" ## , "cov2cor"
+              "coef", "coefficients" ## , "cov2cor"
               ,"fitted", "fitted.values", "formula"
               ,"residuals", "resid"
-              ,"update"
 	      ,"print"# print(x, ...) when show(x) is not sufficient
 	      ,"show"
 ## not yet      ,"summary"

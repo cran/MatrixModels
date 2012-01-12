@@ -1,11 +1,9 @@
 %% "FIXME" --- move this to  stats4
 \name{Model-class}
-\title{Mother Class "Model" all S4 Models}
-\Rdversion{1.1}
+\title{Mother Class "Model" of all S4 Models}
 \docType{class}
 \alias{Model-class}
 \alias{formula,Model-method}
-\alias{getCall,Model-method}
 \alias{update,Model-method}
 \description{
   Class \code{"Model"} is meant to be the mother class of all (S4) model
@@ -30,8 +28,6 @@
   \describe{
     \item{formula}{\code{signature(x = "Model")}: extract the model
       formula - if there is one, or \code{\link{NULL}}.}
-    \item{getCall}{\code{signature(x = "Model")}: the model generating
-      \code{\link{call}}, here identical to \code{x@call}.}
     \item{update}{\code{signature(object = "Model")}: Update the model
       with a new formula, new data, \dots\dots etc.  This semantically
       equivalent (and as \R function almost identical) to the standard

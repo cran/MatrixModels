@@ -132,3 +132,75 @@ setClass("Model", representation(call = "call", fitProps = "list",
 ##' "glpModel" := General Linear Prediction Models
 setClass("glpModel", representation(resp = "respModule", pred = "predModule"),
          contains = "Model")
+
+rMod <-
+    setRefClass("RespModule",
+                fields = list(
+                mu =      "numeric",    # of length n
+                n =       "integer",    # for evaluation of the aic
+                offset =  "numeric",    # of length n * s
+                sqrtXwt = "matrix",     # of dim(.)  == (n, s)
+                sqrtrwt = "numeric",    # sqrt(residual weights)
+                weights = "numeric",    # prior weights
+                wtres =   "numeric",
+                y =       "numeric"),
+                methods = list(
+                initialize = function(...) {
+                    initFields(...)
+                    if (length(n) == 0L) n <<- length(y)
+                    s <- 0L
+		    ##currently fails at pkg INSTALL time: stopifnot(n > 0L)
+                    if (length(weights) == 0L) weights <<- numeric(n) + 1
+                    sqrtrwt <<- sqrt(weights)
+                    if (any((dd <- dim(sqrtXwt)) < 1L))
+                        sqrtXwt <<- matrix(1, ncol = 1L, nrow = n)
+                    else {
+                        stopifnot(nrow(sqrtXwt) == n)
+                        s <- ncol(sqrtXwt)
+                    }
+                    swrk <- max(s, 1L)
+                    if (length(offset) == 0) offset <<- numeric(n * swrk)
+                    else {
+                        so <- length(offset) %/% n
+                        stopifnot(length(offset) %% n == 0, s == 0 || so == s)
+                    }
+                    wtres <<- mu <<- numeric(n) * NA_real_
+                    .self
+                },
+                updateMu = function(gamma) {
+                    gamma <- as.numeric(gamma)
+                    stopifnot(length(gamma) == length(offset))
+                    mu <<- gamma + offset
+                    wtres <<- sqrtrwt * (y - mu)
+                },
+                updateWts = function() {}
+                ))
+
+rMod$lock("y","n","weights","offset")
+glrMod <-
+    setRefClass("GLMrespMod",
+                fields = list(
+                family =  "family",
+                eta =    "numeric"),
+                contains = "RespModule",
+                methods = list(
+                initialize = function(...) {
+                    callSuper(...)
+                    args <- list(...)
+                    stopifnot("family" %in% names(args), is(args$family, "family"))
+                    family <<- args$family
+                    .self
+                },
+                updateMu = function(gamma) {
+                    gamma <- as.numeric(gamma)
+                    stopifnot(length(gamma) == length(offset))
+                    mu <<- family$linkinv(eta <<- offset + gamma)
+                    wtres <<- sqrtrwt * (y - mu)
+                },
+                updateWts = function() {
+                    sqrtrwt <<- rtrwt <- sqrt(weights/family$variance(mu))
+                    sqrtXwt[] <<- rtrwt * family$mu.eta(eta)
+                    wtres <<- rtrwt * (y - mu)
+                }
+                ))
+glrMod$lock("family")
