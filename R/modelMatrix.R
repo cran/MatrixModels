@@ -336,8 +336,6 @@ glm.fp <- function(lp) {
 ##'    entries do not match any of the defaults.
 ##' @return none. Side effect: 'rho' will contain 'control' and 'defaults' entries.
 ##' @author Doug Bates (& Martin Maechler)
-##
-## FIXME -- ESS-oxygen bug:  comment line inside the arg.list messes up @param:
 do.defaults <- function(control, defaults, rho,
 			## by default stop() on mistyped control arguments:
 			nomatch.action = c("stop", "warning", "none"))
@@ -369,13 +367,14 @@ IRLS <- function(mod, control) {
     stopifnot(is(mod, "glpModel"))
     respMod <- mod@resp
     predMod <- mod@pred
+    ## localVariables("..."):
+    MXITER <- warnOnly <- verbose <- quick <- TOL <- SMIN <- finalUpdate <- NULL
     do.defaults(control,
 		list(MXITER = 200L, TOL = 0.0001, SMIN = 0.0001,
 		     verbose = 0L,# integer: for verboseness levels
 		     warnOnly = FALSE,
 		     quick = TRUE, finalUpdate = FALSE),
                 environment())
-
     cc <- predMod@coef
     respMod <- updateMu(respMod, as.vector(predMod@X %*% cc))
     iter <- nHalvings <- 0 ; DONE <- FALSE

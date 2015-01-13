@@ -114,10 +114,10 @@ glmM2 <- update(glmM, quick = FALSE) # slightly more accurate
 glmM3 <- update(glmM, quick = FALSE, finalUpdate = TRUE)
                  # finalUpdate has no effect on 'coef'
 stopifnot( identical(glmM2@pred@coef, glmM3@pred@coef),
-           all.equal(glmM @pred@coef, c.glm, tol=1e-7),
-           all.equal(glmM2@pred@coef, c.glm, tol=1e-12))
+           all.equal(glmM @pred@coef, c.glm, tolerance=1e-7),
+           all.equal(glmM2@pred@coef, c.glm, tolerance=1e-12))
 \dontshow{
-All.eq <- function(x,y, ...) all.equal(x,y, tol= 1e-12, ...)
+All.eq <- function(x,y, ...) all.equal(x,y, tolerance= 1e-12, ...)
 stopifnot( ## ensure typos are *caught* :
   inherits(try(glm4(counts ~ outcome + treatment, family=poisson, data=trial,
                        fooBar = FALSE)), "try-error"),
@@ -149,7 +149,7 @@ clotting <- data.frame(u = c(5,10,15,20,30,40,60,80,100),
                        lot2 = c(69,35,26,21,18,16,13,12,12))
 str(gMN <- glm4(lot1 ~ log(u), data=clotting, family=Gamma, verbose=TRUE))
 glm. <- glm(lot1 ~ log(u), data=clotting, family=Gamma)
-stopifnot( all.equal(gMN@pred@coef, unname(coef(glm.)), tol=1e-7) )
+stopifnot( all.equal(gMN@pred@coef, unname(coef(glm.)), tolerance=1e-7) )
 }
 \keyword{models}
 \keyword{regression}

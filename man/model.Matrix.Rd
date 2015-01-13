@@ -27,7 +27,7 @@ model.Matrix(object, data = environment(object),
     \code{data} has no \code{"terms"} attribute.}
   \item{sparse}{logical indicating if the result should be sparse
     (of class \code{\linkS4class{sparseModelMatrix}}), using
-    \code{\link{sparse.model.matrix}()}.}
+    \code{\link{sparse.model.matrix}()} (package \pkg{Matrix}).}
   \item{drop.unused.levels}{used only when \code{sparse} is TRUE: Should
     factors have unused levels dropped?
     (This used to be true, \emph{implicitly} in the first versions up to
