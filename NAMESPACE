@@ -22,13 +22,12 @@ importFrom("stats" ## potentially all these (we import into 'lme4a'):
 importClassesFrom("methods", ANY, call, character, environment, envRefClass,
                   integer, list, matrix, numeric, oldClass)
 
+importMethodsFrom("methods", show)
 importFrom("methods"
 	   , callGeneric, as, is, extends, new
 	   , getClass, getClassDef, validObject
-	   , setClass, setClassUnion
-           , setGeneric
-           , setMethod, setOldClass
-           , setRefClass
+	   , setClass, setClassUnion, setOldClass, setRefClass
+           , setGeneric, setMethod
            , setValidity, slot, "slot<-", slotNames
 	   , signature, representation, prototype)
 
@@ -53,7 +52,9 @@ importClassesFrom("Matrix",
 		  ddenseMatrix, denseMatrix,
 		  generalMatrix, Matrix)
 
-importFrom("Matrix", Diagonal, isLDL, sparse.model.matrix)
+importFrom("Matrix",
+	   .solve.dgC.chol, .solve.dgC.qr,
+	   Diagonal, isLDL, sparse.model.matrix)
 
 
 ## Generics and functions defined in this package -------------------------

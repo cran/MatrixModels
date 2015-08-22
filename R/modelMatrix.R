@@ -83,16 +83,14 @@ lm.fit.sparse <- function(x, y, w = NULL, offset = NULL,
 
     switch(method,
 	   "cholesky" = {
-	       r <- .Call(Matrix:::dgCMatrix_cholsol, # has AS_CHM_SP(x)
-			  as(if(transpose) tx else t(x), "CsparseMatrix"), y)
+	       r <- .solve.dgC.chol(as(if(transpose) tx else t(x), "CsparseMatrix"), y)
 	       coef <- r[["coef"]]
 	   },
 	   "qr" = {
-	       ## FIXME: should improve C code here, to return more
-	       coef <- .Call(Matrix:::dgCMatrix_qrsol, # has AS_CSP(): must be dgC or dtC:
-			     if(cld@className %in% c("dtCMatrix", "dgCMatrix")) x
-			     else as(x, "dgCMatrix"),
-			     y, order)
+	       coef <-
+                   .solve.dgC.qr(if(cld@className %in% c("dtCMatrix", "dgCMatrix")) x
+                                 else as(x, "dgCMatrix"),
+                                 y, order)
 	       ## for now -- FIXME --
 	       return(coef)
 	   },
@@ -242,7 +240,7 @@ mkRespMod <- function(fr, family = NULL, nlenv = NULL, nlmod = NULL)
         } else {
             ll$Class <- "nlsRespMod"
             ll$nlenv <- nlenv
-            ll$nlmod <- Quote(nlmod)
+	    ll$nlmod <- quote(nlmod)
             ll$sqrtXwt <- grad
             ll$pnames <- colnames(ll$sqrtXwt)
         }
