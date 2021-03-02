@@ -13,16 +13,19 @@ setClass("modelMatrix",
 		 return(gettextf("'%s' slot must be integer of length %d",
 				 "assign", p))
 	     contr <- object@contrasts
-	     c.cl <- sapply(contr, class, USE.NAMES=FALSE)
+	     c.cl <- vapply(contr, function(x) class(x)[[1L]], "<class>", USE.NAMES=FALSE)
 	     if(length(nc <- names(contr)) != length(c.cl) || !all(nchar(nc) > 0))
-		 return(gettextf("'%s' slot must be a correctly named list"))
-	     ## TODO?  length(contrasts) < maximal value in 'assign' <= p
-             contrCls <- c("character", "function", "matrix", "Matrix")
-	     if(any(unlist(lapply(c.cl, function(cl) all(is.na(match(extends(cl), contrCls)))))))
-		 return(gettextf("'%s' slot must be named list of contrast functions or their names, or matrices",
+		 return(gettextf("'%s' slot must be a correctly named list",
 				 "contrasts"))
+	     ## TODO?  length(contrasts) < maximal value in 'assign' <= p
+	     contrCls <- c("character", "function", "matrix", "Matrix")
+	     if(any(vapply(c.cl, function(cl) all(is.na(match(extends(cl), contrCls))), NA)))
+		 return(gettextf(
+		   "'%s' slot must be named list of contrast functions or their names, or matrices",
+		   "contrasts"))
 	     TRUE
 	 })
+
 
 setClass("sparseModelMatrix", representation("VIRTUAL"),
 	 contains = c("CsparseMatrix", "modelMatrix"))
@@ -32,6 +35,14 @@ setClass("denseModelMatrix",  representation("VIRTUAL"),
 ## The currently only *actual* denseModelMatrix class:
 setClass( "ddenseModelMatrix", contains = c("dgeMatrix", "ddenseMatrix", "denseModelMatrix"))
 ## here, add "ddense*": does not influence slots, but yields consistent superclass ordering
+
+' The following gives --- with latest R-devel (2020-01-07 r77634) ----
+
+Found the following significant warnings:
+  Warning: unable to find a consistent ordering of superclasses for class
+ "dsparseModelMatrix": order chosen is inconsistent with the superclasses of
+ "sparseModelMatrix"
+'
 
 ## The currently only *actual* sparseModelMatrix class:
 setClass("dsparseModelMatrix", contains = c("dgCMatrix", "sparseModelMatrix"))

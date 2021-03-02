@@ -1,3 +1,9 @@
+2021-03-01  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.5-0
+	* R/AllClass.R (validity of "modelMatrix"): fix bug entailing from
+	R 4.0 having class(<matrix>) to also contain "array".
+
 2012-01-12  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 0.3-1

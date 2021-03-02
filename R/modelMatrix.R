@@ -29,6 +29,7 @@ model.Matrix <- function(object, data = environment(object),
 ## ----- both  dgCMatrix_cholsol and  dgCMatrix_qrsol are only called from here!
 lm.fit.sparse <- function(x, y, w = NULL, offset = NULL,
 			  method = c("qr", "cholesky"),
+                          ## (tol, singular.ok): UNused
 			  tol = 1e-7, singular.ok = TRUE, order = NULL,
 			  transpose = FALSE)
 ### Fit a linear model, __ given __ a sparse model matrix 'x'
@@ -69,8 +70,7 @@ lm.fit.sparse <- function(x, y, w = NULL, offset = NULL,
 	    y  <- if (ny > 1L) y[ok, , drop = FALSE] else y[ok]
 	}
 	wts <- sqrt(w)
-	## keep the unweighted (x,y):
-	y. <- y ## x. <- x
+	## keep the unweighted (x,y):  y. <- y ## x. <- x
 	x <- x * wts
 	y <- y * wts
     }
