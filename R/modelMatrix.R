@@ -15,7 +15,7 @@ model.Matrix <- function(object, data = environment(object),
 	## as standard	model.matrix() but producing a	"ddenseModelMatrix":
 	m <- model.matrix(object, data=data,
 			  contrasts.arg=contrasts.arg, xlev=xlev, ...)
-	new("ddenseModelMatrix", as(m, "dgeMatrix"),
+	new("ddenseModelMatrix", as(m, "generalMatrix"),
 	    assign = attr(m, "assign"),
 	    contrasts = if(is.null(ctr <- attr(m,"contrasts")))list() else ctr)
     }
@@ -88,9 +88,9 @@ lm.fit.sparse <- function(x, y, w = NULL, offset = NULL,
 	   },
 	   "qr" = {
 	       coef <-
-                   .solve.dgC.qr(if(cld@className %in% c("dtCMatrix", "dgCMatrix")) x
-                                 else as(x, "dgCMatrix"),
-                                 y, order)
+		   .solve.dgC.qr(if(cld@className %in% c("dtCMatrix", "dgCMatrix")) x
+				 else as(x, "CsparseMatrix"),
+				 y, order)
 	       ## for now -- FIXME --
 	       return(coef)
 	   },

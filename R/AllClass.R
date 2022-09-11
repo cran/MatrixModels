@@ -30,11 +30,10 @@ setClass("modelMatrix",
 setClass("sparseModelMatrix", representation("VIRTUAL"),
 	 contains = c("CsparseMatrix", "modelMatrix"))
 setClass("denseModelMatrix",  representation("VIRTUAL"),
-	 contains = c("denseMatrix", "modelMatrix"))
+	 contains = c("unpackedMatrix", "modelMatrix"))
 
 ## The currently only *actual* denseModelMatrix class:
-setClass( "ddenseModelMatrix", contains = c("dgeMatrix", "ddenseMatrix", "denseModelMatrix"))
-## here, add "ddense*": does not influence slots, but yields consistent superclass ordering
+setClass("ddenseModelMatrix", contains = c("dgeMatrix", "denseModelMatrix"))
 
 ' The following gives --- with latest R-devel (2020-01-07 r77634) ----
 
