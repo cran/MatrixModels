@@ -1,3 +1,13 @@
+2022-09-12  Martin Maechler  <maechler@ethz.ch>
+
+	* R/modelMatrix.R (glm4): support the 'contrasts' argument
+	 when that works in 'model.Matrix()'.
+
+2021-09-03  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.5-1
+	* R/AllClass.R: update for Matrix 1.5-0
+
 2021-03-01  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 0.5-0

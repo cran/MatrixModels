@@ -87,7 +87,7 @@ X[1:10, 1:20]
 ## For now, use  'MatrixModels:::'  --- TODO : export once interface is clear!
 
 Xd <- as(X,"matrix")
-system.time(fmDense <- lm.fit(Xd, y = dM[,"Y"]))
+system.time(fmDense <- lm.fit(Xd, y = dM[,"Y"])) # {base} functionality
 system.time( r1 <- MatrixModels:::lm.fit.sparse(X, y = dM[,"Y"]) ) # *is* faster
 stopifnot(all.equal(r1, unname(fmDense$coeff), tolerance = 1e-12))
 system.time(

@@ -76,6 +76,7 @@ lm.fit.sparse <- function(x, y, w = NULL, offset = NULL,
     }
 
     method <- match.arg(method)
+    ## FIXME? - only needed in "qr" case
     order <- {
 	if(is.null(order)) ## recommended default depends on method :
 	    if(method == "qr") 3L else 1L
@@ -83,6 +84,7 @@ lm.fit.sparse <- function(x, y, w = NULL, offset = NULL,
 
     switch(method,
 	   "cholesky" = {
+               ## need only coef --> add option to compute only that!
 	       r <- .solve.dgC.chol(as(if(transpose) tx else t(x), "CsparseMatrix"), y)
 	       coef <- r[["coef"]]
 	   },
@@ -91,7 +93,7 @@ lm.fit.sparse <- function(x, y, w = NULL, offset = NULL,
 		   .solve.dgC.qr(if(cld@className %in% c("dtCMatrix", "dgCMatrix")) x
 				 else as(x, "CsparseMatrix"),
 				 y, order)
-	       ## for now -- FIXME --
+	       ## for now -- FIXME -- also gives 'residuals', and 'L', the triangularMatrix factor
 	       return(coef)
 	   },
 	   ## otherwise:
@@ -157,7 +159,11 @@ setAs("ddenseModelMatrix", "predModule",
   {
       p <- ncol(from)
       new("dPredModule", coef = numeric(p), Vtr = numeric(p),
-          X = from, fac = chol(crossprod(from)))
+          ## Cholesky(<dsyMatrix>, perm = TRUE) would be symmetric with
+          ## Cholesky(<dsCMatrix>, perm = TRUE) _but_ the dense, pivoted
+          ## method does not test for positive semidefiniteness; see, e.g.,
+          ## help("Cholesky", package = "Matrix")
+          X = from, fac = Cholesky(crossprod(from), perm = FALSE))
   })
 
 setAs("dsparseModelMatrix", "predModule",
@@ -273,12 +279,34 @@ glm4 <- function(formula, family, data, weights, subset,
                  "etastart", "mustart", "offset"), names(mf), 0L)
     mf <- mf[c(1L, m)]
     mf$drop.unused.levels <- TRUE
-    mf[[1L]] <- as.name("model.frame")
+    ## need stats:: for non-standard evaluation
+    mf[[1L]] <- quote(stats::model.frame)
     mf <- eval(mf, parent.frame())
+
+    ## mt <- attr(mf, "terms") # allow model.frame to have updated it
+
+    Y <- model.response(mf, "any") # e.g. factors are allowed
+    ## avoid problems with 1D arrays, but keep names
+    if(length(dim(Y)) == 1L) {
+        nm <- rownames(Y)
+        dim(Y) <- NULL
+        if(!is.null(nm)) names(Y) <- nm
+    }
+    ## null model support
+
+    ## glm():
+    ## X <- if (!is.empty.model(mt)) model.matrix(mt, mf, contrasts) else matrix(,NROW(Y), 0L)
+    ## ?? Needed: ??
+    ## if(is.empty.model(mt)) stop("empty model not yet supported in glm4()")
+
+    ## if(!isTRUE (model)) .NotYetUsed("model")
+    ## if(!isFALSE(x)) .NotYetUsed("x")
+    ## if(!isTRUE (y)) .NotYetUsed("y")
 
     ans <- new("glpModel", call = call,
 	       resp = mkRespMod(mf, family),
 	       pred = as(model.Matrix(formula, mf, sparse = sparse,
+				      contrasts.arg = contrasts,
 				      drop.unused.levels=drop.unused.levels),
 			 "predModule"))
     if (doFit)
@@ -549,7 +577,7 @@ setMethod("reweightPred",
               V <- Reduce("+", lapply(split(seq_len(nrow(V)), gl(s, nrow(sqrtXwt))),
                                       function(ind) V[ind,]))
           predM@Vtr <- as.vector(crossprod(V, wtres))
-          predM@fac <- chol(crossprod(V))
+          predM@fac <- Cholesky(crossprod(V), perm = FALSE)
           predM
       })
 
@@ -567,18 +595,32 @@ setMethod("reweightPred",
           predM
       })
 
+## P' L L' P x = b  <=>  x = P' solve(L') solve(L) P b
+
 setMethod("solveCoef", "dPredModule", function(predM, ...)
       {
-          cc <- solve(t(predM@fac), predM@Vtr)
-	  structure(as.vector(solve(predM@fac, cc)),
-		    sqrLen = sum(as.vector(cc)^2))
+          ff <- as(predM@fac, "dtrMatrix")
+          up <- ff@uplo == "U"
+          b <- predM@Vtr
+          if(pp.uns <- is.unsorted(pp <- predM@fac@perm))
+              b <- b[pp]
+          cc <- solve(if(up) t(ff) else ff, b)
+          x <- solve(if(up) ff else t(ff), cc)
+          if(pp.uns)
+              x <- x[invertPerm(pp)]
+          structure(x, sqrLen = sum(cc * cc))
       })
 
 setMethod("solveCoef", "sPredModule", function(predM, ...)
       {
           ff <- predM@fac
           if (isLDL(ff)) stop("sparse factor must be LL, not LDL")
-          cc <- solve(ff, solve(ff, predM@Vtr, system = "P"), system = "L")
-	  structure(as.vector(solve(ff, solve(ff, cc, system = "Lt"), system = "Pt")),
-		    sqrLen = sum(as.vector(cc)^2))
+          b <- predM@Vtr
+          if(pp.uns <- is.unsorted(pp <- ff@perm + 1L))
+              b <- b[pp]
+          cc <- solve(ff, b, system = "L")
+          x <- solve(ff, cc, system = "Lt")
+          if(pp.uns)
+              x <- x[invertPerm(pp)]
+          structure(x, sqrLen = sum(cc * cc))
       })

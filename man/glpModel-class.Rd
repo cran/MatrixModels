@@ -16,8 +16,7 @@
 }
 \section{Objects from the Class}{
   Objects can be created by calls of the form \code{new("glpModel", ...)},
-  but typically rather are returned by our modeling functions, e.g., the
-  (experimental, hence currently hidden) \code{glm4()}.
+  but typically rather are returned by our modeling functions, e.g., \code{glm4()}.
 }
 \section{Slots}{
   \describe{

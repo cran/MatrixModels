@@ -72,7 +72,8 @@ glm4(formula, family, data, weights, subset, na.action,
     (hidden) function \code{IRLS()}.}
   \item{model, x, y}{currently ignored; here for back compatibility with
     \code{\link{glm}}.}
-  \item{contrasts}{currently ignored}%--- FIXME
+  \item{contrasts}{passed to \code{\link{model.Matrix}(.., contrasts.arg =
+    contrasts)}, see \emph{its} documentation.}
   \item{\dots}{potentially arguments passed on to fitter functions; not
     used currently.}
 }
