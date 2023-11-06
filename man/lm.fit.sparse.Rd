@@ -39,8 +39,13 @@ lm.fit.sparse(x, y, w = NULL, offset = NULL,
   \item{order}{integer or \code{NULL}, for \code{method == "qr"}, will
     determine how the fill-reducing ordering (aka permutation) for the
     \dQuote{symbolic} part is determined (in \code{cs_amd()}), with the
-    options {0: natural}, {1: Chol}, {2: LU}, and {3: QR}, where
-    \code{3} is the default.}
+    options \describe{
+      \item{0:}{natural,}
+      \item{1:}{Chol,}
+      \item{2:}{LU,   and}
+      \item{3:}{QR,}
+    }
+    where \code{3} is the default.}
   \item{transpose}{
     logical; if true, use the transposed matrix \code{t(x)} instead of
     \code{x}.

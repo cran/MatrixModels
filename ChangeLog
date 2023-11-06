@@ -1,3 +1,14 @@
+2023-10-13  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.5-3
+	* man/lm.fit.sparse.Rd: use '\describe{..}` instead of lost braces.
+
+2023-06-18  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.5-2
+	* R/modelMatrix.R (solveCoef): 'predModule': Mikael J Matrix 1.6-0:
+	Using Cholesky() instead of chol() for solve()ing.
+
 2022-09-12  Martin Maechler  <maechler@ethz.ch>
 
 	* R/modelMatrix.R (glm4): support the 'contrasts' argument

@@ -1,5 +1,5 @@
-140fbef82a3afe96444bb6f874851d67 *ChangeLog
-9374a155e4b538c6d9cd888e750b21e1 *DESCRIPTION
+a8b76713e8dc1a809e7d49b50511f891 *ChangeLog
+c0ea49b7cef229ad8c3d7369fff585d0 *DESCRIPTION
 f5e9a2e106332b6d562f27728dd23573 *NAMESPACE
 1dc937041251fd9b888e1c582db13949 *R/AllClass.R
 412fdc8380154f704350319d8d0e42b4 *R/AllGeneric.R
@@ -7,7 +7,7 @@ f5e9a2e106332b6d562f27728dd23573 *NAMESPACE
 0d4a8c52756fab885df4ad945c144220 *man/Model-class.Rd
 4af064a00717fc51df1f2a73dfb1ee61 *man/glm4.Rd
 a553082c07954de213080aaee878455c *man/glpModel-class.Rd
-709c3a6366a33a12c6fe2ee1432bc3e1 *man/lm.fit.sparse.Rd
+ca63cd7d25a491b8b642daef82d45f0a *man/lm.fit.sparse.Rd
 1307c69cb686f9cf520baf1bea46ef60 *man/mkRespMod.Rd
 346eee8ca51b20a83991469da5fe342a *man/model.Matrix.Rd
 a24dafdb447ad0dfd8fb9ab88130fe4e *man/modelMatrix-class.Rd
