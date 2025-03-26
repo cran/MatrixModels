@@ -27,7 +27,7 @@ model.Matrix(object, data = environment(object),
     \code{data} has no \code{"terms"} attribute.}
   \item{sparse}{logical indicating if the result should be sparse
     (of class \code{\linkS4class{sparseModelMatrix}}), using
-    \code{\link{sparse.model.matrix}()} (package \pkg{Matrix}).}
+    \code{\link[Matrix]{sparse.model.matrix}()} (package \pkg{Matrix}).}
   \item{drop.unused.levels}{used only when \code{sparse} is TRUE: Should
     factors have unused levels dropped?
     (This used to be true, \emph{implicitly} in the first versions up to
@@ -40,7 +40,7 @@ model.Matrix(object, data = environment(object),
   \code{model.Matrix()} is a simple wrapper either (\code{sparse = FALSE})
   around the traditional \code{\link{model.matrix}()} returning a
   \code{"\linkS4class{ddenseModelMatrix}"}, or (\code{sparse = TRUE})
-  around \code{\link{sparse.model.matrix}()}, returning a
+  around \code{\link[Matrix]{sparse.model.matrix}()}, returning a
   \code{"\linkS4class{dsparseModelMatrix}"} object.
 
   \code{model.Matrix} creates a design matrix from the description given
@@ -57,8 +57,8 @@ model.Matrix(object, data = environment(object),
 }
 % \author{Martin Maechler}
 \seealso{
-  \code{\link[stats]{model.matrix}},
-  \code{\link{sparse.model.matrix}}.
+  \code{\link[stats]{model.matrix}}, and
+  \code{\link[Matrix]{sparse.model.matrix}} from package \CRANpkg{Matrix}.
 }
 \examples{
 data(CO2, package="datasets")

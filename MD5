@@ -1,5 +1,5 @@
-a8b76713e8dc1a809e7d49b50511f891 *ChangeLog
-c0ea49b7cef229ad8c3d7369fff585d0 *DESCRIPTION
+ec87455ca2402906105e78206e01816e *ChangeLog
+320b8e7f7d9687946a4042e99b640772 *DESCRIPTION
 f5e9a2e106332b6d562f27728dd23573 *NAMESPACE
 1dc937041251fd9b888e1c582db13949 *R/AllClass.R
 412fdc8380154f704350319d8d0e42b4 *R/AllGeneric.R
@@ -7,11 +7,11 @@ f5e9a2e106332b6d562f27728dd23573 *NAMESPACE
 0d4a8c52756fab885df4ad945c144220 *man/Model-class.Rd
 4af064a00717fc51df1f2a73dfb1ee61 *man/glm4.Rd
 a553082c07954de213080aaee878455c *man/glpModel-class.Rd
-ca63cd7d25a491b8b642daef82d45f0a *man/lm.fit.sparse.Rd
+eb01e792369c300f7f87e341ee75feb6 *man/lm.fit.sparse.Rd
 1307c69cb686f9cf520baf1bea46ef60 *man/mkRespMod.Rd
-346eee8ca51b20a83991469da5fe342a *man/model.Matrix.Rd
-a24dafdb447ad0dfd8fb9ab88130fe4e *man/modelMatrix-class.Rd
-a2d4fd05608ce09bcc24bf51f2e8aa0e *man/predModule-class.Rd
+3c628dd6c46a7c6f47cd914a08251715 *man/model.Matrix.Rd
+8c7b215064819b7894879bb74bac7a0f *man/modelMatrix-class.Rd
+c751840e3eb555df750023590c8a4a01 *man/predModule-class.Rd
 8949a8027658932d62b32c8b06c3a59f *man/resid-et-al.Rd
 093c0a234847d812352d2e9768d18584 *man/respModule-class.Rd
 4447a50545cdd04a3b61d824d9f499ef *man/reweightPred.Rd

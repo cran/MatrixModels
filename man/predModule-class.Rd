@@ -40,8 +40,8 @@
     \item{\code{X}:}{a \code{"\linkS4class{ddenseModelMatrix}"} or
       \code{"\linkS4class{dsparseModelMatrix}"}, respectively.}
     \item{\code{fac}:}{For the \code{"dpredModule"} class this factor is a
-      \code{\linkS4class{Cholesky}} object.  For the \code{"spredModule"} class
-      it is of class \code{\linkS4class{CHMfactor}}.}
+      \code{\link[Matrix:Cholesky-class]{Cholesky}} object.  For the \code{"spredModule"} class,
+      it is of class \code{\link[Matrix:CHMfactor-class]{CHMfactor}}.}
   }
 }
 \section{Methods}{

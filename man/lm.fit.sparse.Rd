@@ -16,8 +16,8 @@ lm.fit.sparse(x, y, w = NULL, offset = NULL,
 \arguments{
   \item{x}{\emph{sparse} design matrix of dimension \code{n * p}, i.e.,
     an \R object of a \code{\link{class}} extending
-    \code{\linkS4class{dsparseMatrix}}; typically the result of
-    \code{\link{sparse.model.matrix}}.}
+    \code{\link[Matrix:dsparseMatrix-class]{dsparseMatrix}}; typically the result of
+    \code{\link[Matrix]{sparse.model.matrix}}.}
   \item{y}{vector of observations of length \code{n}, or a matrix with
     \code{n} rows.}
   \item{w}{vector of weights (length \code{n}) to be used in the fitting
@@ -61,7 +61,7 @@ lm.fit.sparse(x, y, w = NULL, offset = NULL,
   \code{\link{glm4}} is an alternative (much) more general fitting
   function.
 
-  \code{\link{sparse.model.matrix}} from the \pkg{Matrix} package;
+  \code{\link[Matrix]{sparse.model.matrix}} from the \CRANpkg{Matrix} package;
   the non-sparse function in standard \R's package \pkg{stats}:
   \code{\link{lm.fit}()}.
 }

@@ -21,11 +21,11 @@
   \dQuote{actual} (aka non-virtual) classes. For these,
   objects can be created by calls of the form
   \code{new("dsparseModelMatrix", x, assign, contrast)}, where \code{x}
-  is a \code{\linkS4class{dgCMatrix}} classed object.
+  is a \code{\link[Matrix:dgCMatrix-class]{dgCMatrix}} classed object.
 }
 \section{Slots}{
   The \code{"modelMatrix"} mother class contains
-  \code{\linkS4class{Matrix}} plus two extra slots,
+  \code{\link[Matrix:Matrix-class]{Matrix}} (pkg \CRANpkg{Matrix}) plus two extra slots,
   \describe{
     \item{\code{assign}:}{\code{"integer"} vector of length
       \code{ncol(.)}, coding the variables which make up the
@@ -42,15 +42,15 @@
   E.g., "dsparseModelMatrix" has the additional slots
   \describe{
     \item{\code{i},\code{p}:}{row number and \dQuote{pointer} integer
-      vectors, see class \code{"\linkS4class{dgCMatrix}"}.}
+      vectors, see class \code{"\link[Matrix:dgCMatrix-class]{dgCMatrix}"}.}
     \item{\code{x}:}{\code{"numeric"} vector of non-zero entries.}
     \item{\code{factors}:}{a (possibly empty) \code{\link{list}} of
       factorizations.}
   }
 }
 \section{Extends}{
-  \code{"dsparseModelMatrix"} extends class \code{"\linkS4class{dgCMatrix}"} directly,\cr
-   \code{"ddenseModelMatrix"} extends class \code{"\linkS4class{dgeMatrix}"} directly.
+  \code{"dsparseModelMatrix"} extends class \code{"\link[Matrix:dgCMatrix-class]{dgCMatrix}"} directly,\cr
+   \code{"ddenseModelMatrix"} extends class \code{"\link[Matrix:dgeMatrix-class]{dgeMatrix}"} directly.
 }
 \section{Methods}{
   \describe{
@@ -66,9 +66,9 @@
 }
 \author{Martin Maechler}
 \seealso{
-  \code{\link{sparse.model.matrix}} will return a
-  \code{"dsparseModelMatrix"} object.
-  \code{\link{model.Matrix}} which is a simple wrapper around the traditional
+  \code{\link[Matrix]{sparse.model.matrix}} (pkg \CRANpkg{Matrix}) will return a
+  \code{"\link[Matrix:dgCMatrix-class]{dgCMatrix}"} object.
+  \code{\link{model.Matrix}} is a simple wrapper around the traditional
   \code{\link{model.matrix}} and returns a \code{"ddenseModelMatrix"} object.
 }
 \examples{
